@@ -2,8 +2,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import Home from '@/pages/Home';
+import Details from '@/pages/Detail';
+import {RootStackParamList} from '@/types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   return (
@@ -12,8 +14,9 @@ function App(): React.JSX.Element {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{title: 'Overview'}}
+          options={{title: 'Home Title'}}
         />
+        <Stack.Screen name="Details" component={Details} />
       </Stack.Navigator>
     </NavigationContainer>
   );

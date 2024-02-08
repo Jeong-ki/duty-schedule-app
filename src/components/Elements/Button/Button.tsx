@@ -1,66 +1,26 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, StyleSheet, Pressable, ActivityIndicator} from 'react-native';
 
-export const Button = ({
-  onPress,
-  onLongPress,
-  title,
-  iconLeft,
-  iconRight,
-  style,
-  textStyle,
-  disabled,
-  activeOpacity,
-  loading,
-}: any) => {
+type ButtonProps = {
+  onClick: () => void;
+  text: string;
+  disabled?: boolean;
+  loading?: boolean;
+};
+
+export const Button = ({onClick, text, disabled, loading}: ButtonProps) => {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      onLongPress={onLongPress}
-      disabled={disabled}
-      activeOpacity={activeOpacity}
-      style={[disabled ? styles.disabledButton : styles.button, style]}>
-      {iconLeft}
-      {loading ? (
-        <ActivityIndicator color="white" />
-      ) : (
-        <Text style={[styles.buttonText, textStyle]}>{title}</Text>
-      )}
-      {iconRight}
-    </TouchableOpacity>
+    <Pressable onPress={onClick} disabled={disabled} style={styles.button}>
+      {loading ? <ActivityIndicator color="white" /> : <Text>{text}</Text>}
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#42a5f5',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    // Add any additional styles or override default styles here
+    paddingVertical: 20,
+    paddingHorizontal: 40,
   },
-  disabledButton: {
-    backgroundColor: 'grey',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    // Add any additional styles or override default styles here
-  },
+  buttonText: {color: '#fff', fontSize: 16},
 });

@@ -1,4 +1,4 @@
-export type BaseEntity = {
-  id: string;
-  createdAt: number;
+export type RootStackParamList = {
+  Home: undefined;
+  Details: undefined;
 };
