@@ -37,13 +37,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 100,
     borderRadius: 20,
     padding: 20,
-    // ios
-    // shadowColor: 'black',
-    // shadowOpacity: 0.5,
-    // shadowRadius: 5,
-    // shadowOffset: {width: 5, height: 5},
-    // aos
-    // elevation: 15,
   },
   innerContent: {
     flex: 1,

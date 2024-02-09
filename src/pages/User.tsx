@@ -3,29 +3,25 @@ import React, {useCallback} from 'react';
 import {Button} from '@/components/Elements';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LoggedInParamList} from '@/types';
-import {Modal} from '@/components/Modal';
 
-type HomeProps = NativeStackScreenProps<LoggedInParamList, 'Home'>;
+type UserProps = NativeStackScreenProps<LoggedInParamList, 'User'>;
 
-function Home({navigation}: HomeProps): React.JSX.Element {
+function User({navigation}: UserProps): React.JSX.Element {
   const handleMoveDetails = useCallback(() => {
-    navigation.navigate('User');
+    navigation.navigate('Home');
   }, [navigation]);
   return (
     <>
       <View
         style={{flex: 1, alignItems: 'flex-end', backgroundColor: 'yellow'}}>
-        <Text>Home</Text>
+        <Text>User</Text>
         <Button onClick={handleMoveDetails} text="Go Details" />
       </View>
       <View style={{flex: 2, backgroundColor: 'skyblue'}}>
         <Text>Good2</Text>
       </View>
-      <Modal onCloseModal={() => {}}>
-        <Text>Modal</Text>
-      </Modal>
     </>
   );
 }
 
-export default Home;
+export default User;
