@@ -1,8 +1,8 @@
 import {UseQueryOptions, useQuery} from '@tanstack/react-query';
-import {api} from '../instance';
-import {Product} from './product-type';
+import {api} from '../axios.instance';
+import {Product} from './types';
 import {AxiosError} from 'axios';
-import {productKeyFactory} from '../key-factory';
+import {productKeyFactory} from './key-factory';
 
 export const getAllProducts = async () => {
   return (await api.get<Array<Product>>('/products')).data;
