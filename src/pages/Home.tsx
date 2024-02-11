@@ -8,9 +8,10 @@ import {Modal} from '@/components/Modal';
 type HomeProps = NativeStackScreenProps<LoggedInParamList, 'Home'>;
 
 function Home({navigation}: HomeProps): React.JSX.Element {
-  const handleMoveDetails = useCallback(() => {
+  const handleMoveDetails: () => void = useCallback((): void => {
     navigation.navigate('User');
   }, [navigation]);
+
   return (
     <>
       <View

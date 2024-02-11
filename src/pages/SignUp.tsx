@@ -1,7 +1,6 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
 import {
   Alert,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   StyleSheet,
@@ -15,25 +14,34 @@ import DismissKeyboardView from '@/components/Layout/DismissKeyboardView';
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
-function SignUp({navigation}: SignUpScreenProps) {
+function SignUp({navigation}: SignUpScreenProps): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const emailRef = useRef<TextInput | null>(null);
-  const nameRef = useRef<TextInput | null>(null);
-  const passwordRef = useRef<TextInput | null>(null);
+  const emailRef: MutableRefObject<TextInput | null> = useRef(null);
+  const nameRef: MutableRefObject<TextInput | null> = useRef(null);
+  const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
-  const onChangeEmail = useCallback((text: string) => {
-    setEmail(text.trim());
-  }, []);
-  const onChangeName = useCallback((text: string) => {
-    setName(text.trim());
-  }, []);
-  const onChangePassword = useCallback((text: string) => {
-    setPassword(text.trim());
-  }, []);
+  const onChangeEmail: (text: string) => void = useCallback(
+    (text: string): void => {
+      setEmail(text.trim());
+    },
+    [],
+  );
+  const onChangeName: (text: string) => void = useCallback(
+    (text: string): void => {
+      setName(text.trim());
+    },
+    [],
+  );
+  const onChangePassword: (text: string) => void = useCallback(
+    (text: string): void => {
+      setPassword(text.trim());
+    },
+    [],
+  );
 
-  const onSubmit = useCallback(() => {
+  const onSubmit: () => void = useCallback((): void => {
     if (!email || !email.trim()) {
       return Alert.alert('알림', '이메일을 입력해주세요.');
     }
@@ -60,7 +68,7 @@ function SignUp({navigation}: SignUpScreenProps) {
     Alert.alert('알림', '회원가입 되었습니다.');
   }, [email, name, password]);
 
-  const canGoNext = email && name && password;
+  const canGoNext: boolean = !!(email && name && password);
   return (
     <DismissKeyboardView>
       <View style={styles.inputWrapper}>
@@ -91,7 +99,7 @@ function SignUp({navigation}: SignUpScreenProps) {
           returnKeyType="next"
           clearButtonMode="while-editing"
           ref={nameRef}
-          onSubmitEditing={() => passwordRef.current?.focus()}
+          onSubmitEditing={(): void | undefined => passwordRef.current?.focus()}
           blurOnSubmit={false}
         />
       </View>

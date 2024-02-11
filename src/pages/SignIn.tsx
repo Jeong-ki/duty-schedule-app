@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '@/types';
 import DismissKeyboardView from '@/components/Layout/DismissKeyboardView';
@@ -16,18 +16,24 @@ type SignInProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 function SignIn({navigation}: SignInProps): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const emailRef = useRef<TextInput | null>(null);
-  const passwordRef = useRef<TextInput | null>(null);
+  const emailRef: MutableRefObject<TextInput | null> = useRef(null);
+  const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
-  const handleChangeEmail = useCallback((text: string) => {
-    setEmail(text.trim());
-  }, []);
+  const handleChangeEmail: (text: string) => void = useCallback(
+    (text: string): void => {
+      setEmail(text.trim());
+    },
+    [],
+  );
 
-  const handleChangePassword = useCallback((text: string) => {
-    setPassword(text.trim());
-  }, []);
+  const handleChangePassword: (text: string) => void = useCallback(
+    (text: string): void => {
+      setPassword(text.trim());
+    },
+    [],
+  );
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit: () => void = useCallback((): void => {
     if (!email || !email.trim()) {
       return Alert.alert('알림', '이메일을 입력해주세요.');
     }
@@ -37,11 +43,11 @@ function SignIn({navigation}: SignInProps): React.JSX.Element {
     Alert.alert('알림', '로그인 되었습니다.');
   }, [email, password]);
 
-  const toSignUp = useCallback(() => {
+  const toSignUp: () => void = useCallback((): void => {
     navigation.navigate('SignUp');
   }, [navigation]);
 
-  const canGoNext = email && password;
+  const canGoNext: boolean = !!(email && password);
 
   return (
     <DismissKeyboardView>
