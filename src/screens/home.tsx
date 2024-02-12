@@ -1,15 +1,15 @@
 import {Text, View} from 'react-native';
 import React, {useCallback} from 'react';
-import {Button} from '@/components/Elements';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LoggedInParamList} from '@/types';
-import {Modal} from '@/components/Modal';
+import {Button} from '@/components/elements';
+import {Modal} from '@/components/modal';
+import {HomeScreenProps} from '@/navigation/types';
+import {RouteNames} from '@/navigation/route-names';
 
-type HomeProps = NativeStackScreenProps<LoggedInParamList, 'Home'>;
+type Props = HomeScreenProps;
 
-function Home({navigation}: HomeProps): React.JSX.Element {
+const HomeScreen: React.FC<Props> = ({navigation}) => {
   const handleMoveDetails: () => void = useCallback((): void => {
-    navigation.navigate('User');
+    navigation.navigate(RouteNames.user);
   }, [navigation]);
 
   return (
@@ -27,6 +27,6 @@ function Home({navigation}: HomeProps): React.JSX.Element {
       </Modal>
     </>
   );
-}
+};
 
-export default Home;
+export default HomeScreen;

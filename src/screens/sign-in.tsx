@@ -7,13 +7,13 @@ import {
   View,
 } from 'react-native';
 import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '@/types';
-import DismissKeyboardView from '@/components/Layout/DismissKeyboardView';
+import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
+import {SignInScreenProps} from '@/navigation/types';
+import {RouteNames} from '@/navigation/route-names';
 
-type SignInProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
+type Props = SignInScreenProps;
 
-function SignIn({navigation}: SignInProps): React.JSX.Element {
+const SignInScreen: React.FC<Props> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailRef: MutableRefObject<TextInput | null> = useRef(null);
@@ -44,7 +44,7 @@ function SignIn({navigation}: SignInProps): React.JSX.Element {
   }, [email, password]);
 
   const toSignUp: () => void = useCallback((): void => {
-    navigation.navigate('SignUp');
+    navigation.navigate(RouteNames.signUp);
   }, [navigation]);
 
   const canGoNext: boolean = !!(email && password);
@@ -102,7 +102,9 @@ function SignIn({navigation}: SignInProps): React.JSX.Element {
       </View>
     </DismissKeyboardView>
   );
-}
+};
+
+export default SignInScreen;
 
 const style = StyleSheet.create({
   inputWrapper: {
@@ -135,5 +137,3 @@ const style = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default SignIn;

@@ -8,13 +8,12 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '@/types';
-import DismissKeyboardView from '@/components/Layout/DismissKeyboardView';
+import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
+import {SignUpScreenProps} from '@/navigation/types';
 
-type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
+type Props = SignUpScreenProps;
 
-function SignUp({navigation}: SignUpScreenProps): React.JSX.Element {
+const SignUp: React.FC<Props> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -134,7 +133,9 @@ function SignUp({navigation}: SignUpScreenProps): React.JSX.Element {
       </View>
     </DismissKeyboardView>
   );
-}
+};
+
+export default SignUp;
 
 const styles = StyleSheet.create({
   textInput: {
@@ -167,5 +168,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default SignUp;
