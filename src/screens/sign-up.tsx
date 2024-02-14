@@ -1,5 +1,6 @@
 import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Platform,
   Pressable,
@@ -14,6 +15,7 @@ import {SignUpScreenProps} from '@/navigation/types';
 type Props = SignUpScreenProps;
 
 const SignUp: React.FC<Props> = ({navigation}) => {
+  let loading = false;
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -41,6 +43,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   );
 
   const onSubmit: () => void = useCallback((): void => {
+    // if (loading) return;
     if (!email || !email.trim()) {
       return Alert.alert('알림', '이메일을 입력해주세요.');
     }
@@ -120,16 +123,23 @@ const SignUp: React.FC<Props> = ({navigation}) => {
         />
       </View>
       <View style={styles.buttonZone}>
-        <Pressable
-          style={
-            canGoNext
-              ? StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
-              : styles.loginButton
-          }
-          disabled={!canGoNext}
-          onPress={onSubmit}>
-          <Text style={styles.loginButtonText}>회원가입</Text>
-        </Pressable>
+        {loading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Pressable
+            style={
+              canGoNext
+                ? StyleSheet.compose(
+                    styles.loginButton,
+                    styles.loginButtonActive,
+                  )
+                : styles.loginButton
+            }
+            disabled={!canGoNext} // !canGoNext || loading
+            onPress={onSubmit}>
+            <Text style={styles.loginButtonText}>회원가입</Text>
+          </Pressable>
+        )}
       </View>
     </DismissKeyboardView>
   );
