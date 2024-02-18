@@ -11,18 +11,20 @@ import {
 } from 'react-native';
 import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
 import {SignUpScreenProps} from '@/navigation/types';
-import {useSignupUser} from '@/api/auth/post-signup';
+import {useSignUpUser} from '@/api/auth/post-sign-up';
+import {RouteNames} from '@/navigation/route-names';
+import {validateEmail, validatePassword} from '@/utils/validate';
 
 type Props = SignUpScreenProps;
 
-interface SignupData {
+interface SignUpData {
   username: string;
   email: string;
   password: string;
 }
 
 const SignUp: React.FC<Props> = ({navigation}) => {
-  const [signupData, setSignupData] = useState<SignupData>({
+  const [signUpData, setSignUpData] = useState<SignUpData>({
     username: '',
     email: '',
     password: '',
@@ -32,27 +34,27 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
   const {
-    mutate: signupUser,
+    mutate: signUpUser,
     isPending,
     error,
-  } = useSignupUser({
+  } = useSignUpUser({
     onSuccess: data => {
-      console.log('Signup Successful', data);
+      console.log('SignUp Successful', data);
     },
     onError: error => {
-      console.error('Signup Error: ', error);
+      console.error('SignUp Error: ', error);
     },
   });
 
   const handleChangeText = useCallback((name: string, text: string) => {
-    setSignupData(prev => ({
+    setSignUpData(prev => ({
       ...prev,
       [name]: text.trim(),
     }));
   }, []);
 
   const onSubmit: () => void = useCallback((): void => {
-    const {email, username, password} = signupData;
+    const {email, username, password} = signUpData;
     if (!email || !email.trim()) {
       return Alert.alert('알림', '이메일을 입력해주세요.');
     }
@@ -62,26 +64,26 @@ const SignUp: React.FC<Props> = ({navigation}) => {
     if (!password || !password.trim()) {
       return Alert.alert('알림', '비밀번호를 입력해주세요.');
     }
-    if (
-      !/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/.test(
-        email,
-      )
-    ) {
+    if (!validateEmail(email)) {
       return Alert.alert('알림', '올바른 이메일 주소가 아닙니다.');
     }
-    if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
+    if (!validatePassword(password)) {
       return Alert.alert(
         '알림',
         '비밀번호는 영문,숫자,특수문자($@^!%*#?&)를 모두 포함하여 8자 이상 입력해야합니다.',
       );
     }
-    signupUser(signupData);
-    // Alert.alert('알림', '회원가입 되었습니다.');
-  }, [signupData, signupUser]);
+    signUpUser(signUpData);
+  }, [signUpData, signUpUser]);
 
-  const canGoNext: boolean = Object.values(signupData).every(
+  const toSignIn: () => void = useCallback((): void => {
+    navigation.navigate(RouteNames.signIn);
+  }, [navigation]);
+
+  const canGoNext: boolean = Object.values(signUpData).every(
     value => value !== '',
   );
+
   return (
     <DismissKeyboardView>
       <View style={styles.inputWrapper}>
@@ -92,7 +94,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           placeholder="이메일을 입력해주세요"
           placeholderTextColor="#666"
           textContentType="emailAddress"
-          value={signupData.email}
+          value={signUpData.email}
           returnKeyType="next"
           clearButtonMode="while-editing"
           ref={emailRef}
@@ -107,7 +109,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           placeholder="이름을 입력해주세요."
           placeholderTextColor="#666"
           onChangeText={(text: string) => handleChangeText('username', text)}
-          value={signupData.username}
+          value={signUpData.username}
           textContentType="name"
           returnKeyType="next"
           clearButtonMode="while-editing"
@@ -123,7 +125,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           placeholder="비밀번호를 입력해주세요(영문,숫자,특수문자)"
           placeholderTextColor="#666"
           onChangeText={(text: string) => handleChangeText('password', text)}
-          value={signupData.password}
+          value={signUpData.password}
           keyboardType={Platform.OS === 'android' ? 'default' : 'ascii-capable'}
           textContentType="password"
           secureTextEntry
@@ -147,6 +149,9 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           ) : (
             <Text style={styles.loginButtonText}>회원가입</Text>
           )}
+        </Pressable>
+        <Pressable onPress={toSignIn}>
+          <Text>로그인하기</Text>
         </Pressable>
       </View>
     </DismissKeyboardView>

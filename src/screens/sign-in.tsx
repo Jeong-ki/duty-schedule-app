@@ -10,44 +10,66 @@ import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
 import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
 import {SignInScreenProps} from '@/navigation/types';
 import {RouteNames} from '@/navigation/route-names';
+import {useSignInUser} from '@/api/auth/post-sign-in';
+import {validateEmail} from '@/utils/validate';
 
 type Props = SignInScreenProps;
 
+interface SignInData {
+  email: string;
+  password: string;
+}
+
 const SignInScreen: React.FC<Props> = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [signInData, setSignInData] = useState<SignInData>({
+    email: '',
+    password: '',
+  });
   const emailRef: MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
-  const handleChangeEmail: (text: string) => void = useCallback(
-    (text: string): void => {
-      setEmail(text.trim());
+  const {
+    mutate: signInUser,
+    isPending,
+    error,
+  } = useSignInUser({
+    onSuccess: data => {
+      console.log('SignIn Successful', data);
     },
-    [],
-  );
+    onError: error => {
+      console.error('SignIn Error: ', error);
+    },
+  });
 
-  const handleChangePassword: (text: string) => void = useCallback(
-    (text: string): void => {
-      setPassword(text.trim());
-    },
-    [],
-  );
+  const handleChangeText = useCallback((name: string, text: string) => {
+    setSignInData(prev => ({
+      ...prev,
+      [name]: text.trim(),
+    }));
+  }, []);
 
   const handleSubmit: () => void = useCallback((): void => {
+    const {email, password} = signInData;
     if (!email || !email.trim()) {
       return Alert.alert('알림', '이메일을 입력해주세요.');
     }
     if (!password || !password.trim()) {
       return Alert.alert('알림', '비밀번호를 입력해주세요.');
     }
-    Alert.alert('알림', '로그인 되었습니다.');
-  }, [email, password]);
+    if (!validateEmail(email)) {
+      return Alert.alert('알림', '올바른 이메일 주소가 아닙니다.');
+    }
+    signInUser(signInData);
+    // Alert.alert('알림', '로그인 되었습니다.');
+  }, [signInData, signInUser]);
 
   const toSignUp: () => void = useCallback((): void => {
     navigation.navigate(RouteNames.signUp);
   }, [navigation]);
 
-  const canGoNext: boolean = !!(email && password);
+  const canGoNext: boolean = Object.values(signInData).every(
+    value => value !== '',
+  );
 
   return (
     <DismissKeyboardView>
@@ -55,8 +77,8 @@ const SignInScreen: React.FC<Props> = ({navigation}) => {
         <Text style={style.label}>이메일</Text>
         <TextInput
           placeholder="이메일을 입력해주세요."
-          value={email}
-          onChangeText={handleChangeEmail}
+          value={signInData.email}
+          onChangeText={text => handleChangeText('email', text)}
           style={style.textInput}
           importantForAutofill="yes"
           autoComplete="email"
@@ -76,8 +98,8 @@ const SignInScreen: React.FC<Props> = ({navigation}) => {
         <TextInput
           style={style.textInput}
           placeholder="비밀번호를 입력해주세요."
-          value={password}
-          onChangeText={handleChangePassword}
+          value={signInData.password}
+          onChangeText={text => handleChangeText('password', text)}
           autoComplete="password"
           secureTextEntry
           ref={passwordRef}

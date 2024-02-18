@@ -3,15 +3,15 @@ import {api} from '../axios.instance';
 import {SignUpData, SignUpResponse} from './types';
 import {AxiosError} from 'axios';
 
-const signupUser = async (signupData: SignUpData): Promise<SignUpResponse> => {
-  return (await api.post<SignUpResponse>('/auth/signup', signupData)).data;
+const signUpUser = async (signUpData: SignUpData): Promise<SignUpResponse> => {
+  return (await api.post<SignUpResponse>('/auth/signUp', signUpData)).data;
 };
 
-export const useSignupUser = (
+export const useSignUpUser = (
   options?: UseMutationOptions<SignUpResponse, AxiosError, SignUpData>,
 ) => {
   return useMutation({
-    mutationFn: signupUser,
+    mutationFn: signUpUser,
     ...options,
   });
 };
