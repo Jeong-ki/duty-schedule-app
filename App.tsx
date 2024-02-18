@@ -21,7 +21,7 @@ function App(): React.JSX.Element {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          {!user ? <AppStack /> : <LoginStack />}
+          {user ? <AppStack /> : <LoginStack />}
         </NavigationContainer>
       </QueryClientProvider>
     </ErrorBoundary>
