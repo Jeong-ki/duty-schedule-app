@@ -2,9 +2,7 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import {UserScreenProps} from '@/navigation/types';
 
-type Props = UserScreenProps;
-
-const UserScreen: React.FC<Props> = ({navigation}) => {
+const UserScreen: React.FC<UserScreenProps> = ({navigation}) => {
   return (
     <>
       <View>

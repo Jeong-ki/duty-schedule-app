@@ -1,30 +1,29 @@
 import {
-  Alert,
+  ActivityIndicator,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
+import React, {MutableRefObject, useCallback, useMemo, useRef} from 'react';
 import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
 import {SignInScreenProps} from '@/navigation/types';
 import {RouteNames} from '@/navigation/route-names';
 import {useSignInUser} from '@/api/auth/post-sign-in';
-import {validateEmail} from '@/utils/validate';
+import {signInValidation} from '@/utils/validate';
+import useForm from '@/hooks/useForm';
+import {ObjType} from '@/types';
 
-type Props = SignInScreenProps;
+const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
+  const initialState = useMemo(
+    () => ({
+      email: '',
+      password: '',
+    }),
+    [],
+  );
 
-interface SignInData {
-  email: string;
-  password: string;
-}
-
-const SignInScreen: React.FC<Props> = ({navigation}) => {
-  const [signInData, setSignInData] = useState<SignInData>({
-    email: '',
-    password: '',
-  });
   const emailRef: MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
@@ -41,45 +40,34 @@ const SignInScreen: React.FC<Props> = ({navigation}) => {
     },
   });
 
-  const handleChangeText = useCallback((name: string, text: string) => {
-    setSignInData(prev => ({
-      ...prev,
-      [name]: text.trim(),
-    }));
-  }, []);
+  const handleSubmit = useCallback(
+    (values: ObjType) => {
+      signInUser(values);
+    },
+    [signInUser],
+  );
 
-  const handleSubmit: () => void = useCallback((): void => {
-    const {email, password} = signInData;
-    if (!email || !email.trim()) {
-      return Alert.alert('알림', '이메일을 입력해주세요.');
-    }
-    if (!password || !password.trim()) {
-      return Alert.alert('알림', '비밀번호를 입력해주세요.');
-    }
-    if (!validateEmail(email)) {
-      return Alert.alert('알림', '올바른 이메일 주소가 아닙니다.');
-    }
-    signInUser(signInData);
-    // Alert.alert('알림', '로그인 되었습니다.');
-  }, [signInData, signInUser]);
+  const {values, errors, onChange, onSubmit} = useForm({
+    initialValues: initialState,
+    handleSubmit,
+    validation: signInValidation,
+  });
 
   const toSignUp: () => void = useCallback((): void => {
     navigation.navigate(RouteNames.signUp);
   }, [navigation]);
 
-  const canGoNext: boolean = Object.values(signInData).every(
-    value => value !== '',
-  );
+  const canGoNext: boolean = Object.values(values).every(value => value !== '');
 
   return (
     <DismissKeyboardView>
-      <View style={style.inputWrapper}>
-        <Text style={style.label}>이메일</Text>
+      <View style={styles.inputWrapper}>
+        <Text style={styles.label}>이메일</Text>
         <TextInput
           placeholder="이메일을 입력해주세요."
-          value={signInData.email}
-          onChangeText={text => handleChangeText('email', text)}
-          style={style.textInput}
+          value={values.email}
+          onChangeText={value => onChange('email', value)}
+          style={styles.textInput}
           importantForAutofill="yes"
           autoComplete="email"
           textContentType="emailAddress"
@@ -92,31 +80,37 @@ const SignInScreen: React.FC<Props> = ({navigation}) => {
           clearButtonMode="while-editing"
           keyboardType="email-address"
         />
+        <Text style={styles.errorText}>{errors.email || ''}</Text>
       </View>
-      <View style={style.inputWrapper}>
-        <Text style={style.label}>비밀번호</Text>
+      <View style={styles.inputWrapper}>
+        <Text style={styles.label}>비밀번호</Text>
         <TextInput
-          style={style.textInput}
+          style={styles.textInput}
           placeholder="비밀번호를 입력해주세요."
-          value={signInData.password}
-          onChangeText={text => handleChangeText('password', text)}
+          value={values.password}
+          onChangeText={value => onChange('password', value)}
           autoComplete="password"
           secureTextEntry
           ref={passwordRef}
-          onSubmitEditing={handleSubmit}
+          onSubmitEditing={onSubmit}
           clearButtonMode="while-editing"
         />
+        <Text>{errors.password || ''}</Text>
       </View>
-      <View style={style.buttonZone}>
+      <View style={styles.buttonZone}>
         <Pressable
           style={
             !canGoNext
-              ? style.loginButton
-              : StyleSheet.compose(style.loginButton, style.loginButtonActive)
+              ? styles.loginButton
+              : StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
           }
-          onPress={handleSubmit}
+          onPress={onSubmit}
           disabled={!canGoNext}>
-          <Text style={style.loginButtonText}>로그인</Text>
+          {isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.loginButtonText}>로그인</Text>
+          )}
         </Pressable>
         <Pressable onPress={toSignUp}>
           <Text>회원가입하기</Text>
@@ -128,7 +122,7 @@ const SignInScreen: React.FC<Props> = ({navigation}) => {
 
 export default SignInScreen;
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   inputWrapper: {
     padding: 20,
   },
@@ -146,10 +140,14 @@ const style = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
     marginBottom: 5,
+    width: 90,
+    height: 40,
   },
   loginButtonActive: {
     backgroundColor: 'blue',
@@ -157,5 +155,8 @@ const style = StyleSheet.create({
   loginButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
   },
 });

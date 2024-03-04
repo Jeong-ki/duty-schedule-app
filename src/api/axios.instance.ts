@@ -3,7 +3,6 @@ import {Platform} from 'react-native';
 import Config from 'react-native-config';
 
 const {BASE_URL, IOS_BASE_URL, ANDROID_BASE_URL} = Config;
-console.log(BASE_URL, Config.IOS_BASE_URL, ANDROID_BASE_URL);
 
 export const api: AxiosInstance = axios.create({
   baseURL: !__DEV__

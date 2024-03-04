@@ -1,7 +1,6 @@
-import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
+import React, {MutableRefObject, useCallback, useMemo, useRef} from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Platform,
   Pressable,
   StyleSheet,
@@ -13,22 +12,20 @@ import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
 import {SignUpScreenProps} from '@/navigation/types';
 import {useSignUpUser} from '@/api/auth/post-sign-up';
 import {RouteNames} from '@/navigation/route-names';
-import {validateEmail, validatePassword} from '@/utils/validate';
+import {signUpValidation} from '@/utils/validate';
+import {ObjType} from '@/types';
+import useForm from '@/hooks/useForm';
 
-type Props = SignUpScreenProps;
+const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
+  const initialState = useMemo(
+    () => ({
+      username: '',
+      email: '',
+      password: '',
+    }),
+    [],
+  );
 
-interface SignUpData {
-  username: string;
-  email: string;
-  password: string;
-}
-
-const SignUp: React.FC<Props> = ({navigation}) => {
-  const [signUpData, setSignUpData] = useState<SignUpData>({
-    username: '',
-    email: '',
-    password: '',
-  });
   const emailRef: MutableRefObject<TextInput | null> = useRef(null);
   const usernameRef: MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
@@ -46,43 +43,24 @@ const SignUp: React.FC<Props> = ({navigation}) => {
     },
   });
 
-  const handleChangeText = useCallback((name: string, text: string) => {
-    setSignUpData(prev => ({
-      ...prev,
-      [name]: text.trim(),
-    }));
-  }, []);
+  const handleSubmit = useCallback(
+    (values: ObjType) => {
+      signUpUser(values);
+    },
+    [signUpUser],
+  );
 
-  const onSubmit: () => void = useCallback((): void => {
-    const {email, username, password} = signUpData;
-    if (!email || !email.trim()) {
-      return Alert.alert('알림', '이메일을 입력해주세요.');
-    }
-    if (!username || !username.trim()) {
-      return Alert.alert('알림', '이름을 입력해주세요.');
-    }
-    if (!password || !password.trim()) {
-      return Alert.alert('알림', '비밀번호를 입력해주세요.');
-    }
-    if (!validateEmail(email)) {
-      return Alert.alert('알림', '올바른 이메일 주소가 아닙니다.');
-    }
-    if (!validatePassword(password)) {
-      return Alert.alert(
-        '알림',
-        '비밀번호는 영문,숫자,특수문자($@^!%*#?&)를 모두 포함하여 8자 이상 입력해야합니다.',
-      );
-    }
-    signUpUser(signUpData);
-  }, [signUpData, signUpUser]);
+  const {values, errors, onChange, onSubmit} = useForm({
+    initialValues: initialState,
+    handleSubmit,
+    validation: signUpValidation,
+  });
 
   const toSignIn: () => void = useCallback((): void => {
     navigation.navigate(RouteNames.signIn);
   }, [navigation]);
 
-  const canGoNext: boolean = Object.values(signUpData).every(
-    value => value !== '',
-  );
+  const canGoNext: boolean = Object.values(values).every(value => value !== '');
 
   return (
     <DismissKeyboardView>
@@ -90,17 +68,18 @@ const SignUp: React.FC<Props> = ({navigation}) => {
         <Text style={styles.label}>이메일</Text>
         <TextInput
           style={styles.textInput}
-          onChangeText={(text: string) => handleChangeText('email', text)}
+          onChangeText={(text: string) => onChange('email', text)}
           placeholder="이메일을 입력해주세요"
           placeholderTextColor="#666"
           textContentType="emailAddress"
-          value={signUpData.email}
+          value={values.email}
           returnKeyType="next"
           clearButtonMode="while-editing"
           ref={emailRef}
           onSubmitEditing={() => usernameRef.current?.focus()}
           blurOnSubmit={false}
         />
+        <Text style={styles.errorText}>{errors.email || ''}</Text>
       </View>
       <View style={styles.inputWrapper}>
         <Text style={styles.label}>이름</Text>
@@ -108,8 +87,8 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           style={styles.textInput}
           placeholder="이름을 입력해주세요."
           placeholderTextColor="#666"
-          onChangeText={(text: string) => handleChangeText('username', text)}
-          value={signUpData.username}
+          onChangeText={(text: string) => onChange('username', text)}
+          value={values.username}
           textContentType="name"
           returnKeyType="next"
           clearButtonMode="while-editing"
@@ -117,6 +96,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           onSubmitEditing={(): void | undefined => passwordRef.current?.focus()}
           blurOnSubmit={false}
         />
+        <Text style={styles.errorText}>{errors.username || ''}</Text>
       </View>
       <View style={styles.inputWrapper}>
         <Text style={styles.label}>비밀번호</Text>
@@ -124,8 +104,8 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           style={styles.textInput}
           placeholder="비밀번호를 입력해주세요(영문,숫자,특수문자)"
           placeholderTextColor="#666"
-          onChangeText={(text: string) => handleChangeText('password', text)}
-          value={signUpData.password}
+          onChangeText={(text: string) => onChange('password', text)}
+          value={values.password}
           keyboardType={Platform.OS === 'android' ? 'default' : 'ascii-capable'}
           textContentType="password"
           secureTextEntry
@@ -134,6 +114,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           ref={passwordRef}
           onSubmitEditing={onSubmit}
         />
+        <Text style={styles.errorText}>{errors.password || ''}</Text>
       </View>
       <View style={styles.buttonZone}>
         <Pressable
@@ -178,12 +159,14 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
     marginBottom: 10,
     width: 100,
-    height: 44,
+    height: 40,
   },
   loginButtonActive: {
     backgroundColor: 'blue',
@@ -191,5 +174,8 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
   },
 });

@@ -5,9 +5,7 @@ import {Modal} from '@/components/modal';
 import {HomeScreenProps} from '@/navigation/types';
 import {RouteNames} from '@/navigation/route-names';
 
-type Props = HomeScreenProps;
-
-const HomeScreen: React.FC<Props> = ({navigation}) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const handleMoveDetails: () => void = useCallback((): void => {
     navigation.navigate(RouteNames.user);
   }, [navigation]);
