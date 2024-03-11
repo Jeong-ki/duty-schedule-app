@@ -1,6 +1,7 @@
 import axios, {AxiosInstance} from 'axios';
 import {Platform} from 'react-native';
 import Config from 'react-native-config';
+import {setInterceptors} from './axios.interceptors';
 
 const {BASE_URL, IOS_BASE_URL, ANDROID_BASE_URL} = Config;
 
@@ -15,3 +16,5 @@ export const api: AxiosInstance = axios.create({
     'Content-Type': 'application/json; charset=utf-8',
   },
 });
+
+export const tokenApi = setInterceptors(api);

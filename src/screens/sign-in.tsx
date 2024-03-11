@@ -14,6 +14,7 @@ import {useSignInUser} from '@/api/auth/post-sign-in';
 import {signInValidation} from '@/utils/validate';
 import useForm from '@/hooks/useForm';
 import {ObjType} from '@/types';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const initialState = useMemo(
@@ -32,8 +33,9 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
     isPending,
     error,
   } = useSignInUser({
-    onSuccess: data => {
-      console.log('SignIn Successful', data);
+    onSuccess: async data => {
+      await EncryptedStorage.setItem('userInfo', JSON.stringify(data));
+      // go home
     },
     onError: error => {
       console.error('SignIn Error: ', error);
@@ -58,6 +60,24 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   }, [navigation]);
 
   const canGoNext: boolean = Object.values(values).every(value => value !== '');
+
+  const getUserInfo = () => {
+    retrieveUserSession();
+  };
+
+  async function retrieveUserSession() {
+    try {
+      const session = await EncryptedStorage.getItem('token');
+
+      if (session !== undefined) {
+        console.log(session);
+
+        // Congrats! You've just retrieved your first value!
+      }
+    } catch (error) {
+      // There was an error on the native side
+    }
+  }
 
   return (
     <DismissKeyboardView>
@@ -114,6 +134,9 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
         </Pressable>
         <Pressable onPress={toSignUp}>
           <Text>회원가입하기</Text>
+        </Pressable>
+        <Pressable onPress={getUserInfo}>
+          <Text>내 정보 호출 (토큰 테스트)</Text>
         </Pressable>
       </View>
     </DismissKeyboardView>

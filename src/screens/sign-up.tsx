@@ -15,6 +15,7 @@ import {RouteNames} from '@/navigation/route-names';
 import {signUpValidation} from '@/utils/validate';
 import {ObjType} from '@/types';
 import useForm from '@/hooks/useForm';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
   const initialState = useMemo(
@@ -35,8 +36,9 @@ const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
     isPending,
     error,
   } = useSignUpUser({
-    onSuccess: data => {
-      console.log('SignUp Successful', data);
+    onSuccess: async data => {
+      await EncryptedStorage.setItem('userInfo', JSON.stringify(data));
+      // go home
     },
     onError: error => {
       console.error('SignUp Error: ', error);

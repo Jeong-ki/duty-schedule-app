@@ -1,4 +1,4 @@
-export interface SignUpResponse {
+export interface SignUp {
   id: number;
   email: string;
   username: string;
@@ -6,9 +6,17 @@ export interface SignUpResponse {
   created_at: string;
 }
 
-export interface SignInResponse {
+export interface SignIn {
   id: number;
   email: string;
   username: string;
   token: string;
+  refreshToken: string;
+}
+
+export interface MyInfo {
+  id: number;
+  email: string;
+  username: string;
+  created_at: string;
 }
