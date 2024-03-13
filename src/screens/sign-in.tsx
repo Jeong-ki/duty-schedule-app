@@ -15,6 +15,7 @@ import {signInValidation} from '@/utils/validate';
 import useForm from '@/hooks/useForm';
 import {ObjType} from '@/types';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useGetMyInfo} from '@/api/auth';
 
 const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const initialState = useMemo(
@@ -24,7 +25,6 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
     }),
     [],
   );
-
   const emailRef: MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
@@ -34,13 +34,18 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
     error,
   } = useSignInUser({
     onSuccess: async data => {
-      await EncryptedStorage.setItem('userInfo', JSON.stringify(data));
+      const {token, refreshToken, ...rest} = data;
+      await EncryptedStorage.setItem('token', token);
+      await EncryptedStorage.setItem('refreshToken', refreshToken);
+      await EncryptedStorage.setItem('myInfo', JSON.stringify(rest));
       // go home
     },
     onError: error => {
       console.error('SignIn Error: ', error);
     },
   });
+
+  const {data, refetch} = useGetMyInfo({enabled: false});
 
   const handleSubmit = useCallback(
     (values: ObjType) => {
@@ -62,22 +67,8 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const canGoNext: boolean = Object.values(values).every(value => value !== '');
 
   const getUserInfo = () => {
-    retrieveUserSession();
+    refetch();
   };
-
-  async function retrieveUserSession() {
-    try {
-      const session = await EncryptedStorage.getItem('token');
-
-      if (session !== undefined) {
-        console.log(session);
-
-        // Congrats! You've just retrieved your first value!
-      }
-    } catch (error) {
-      // There was an error on the native side
-    }
-  }
 
   return (
     <DismissKeyboardView>

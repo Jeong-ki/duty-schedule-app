@@ -37,7 +37,10 @@ const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
     error,
   } = useSignUpUser({
     onSuccess: async data => {
-      await EncryptedStorage.setItem('userInfo', JSON.stringify(data));
+      const {token, refreshToken, ...rest} = data;
+      await EncryptedStorage.setItem('token', token);
+      await EncryptedStorage.setItem('refreshToken', refreshToken);
+      await EncryptedStorage.setItem('myInfo', JSON.stringify(rest));
       // go home
     },
     onError: error => {
