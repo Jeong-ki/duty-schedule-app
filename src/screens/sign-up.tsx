@@ -15,7 +15,7 @@ import {RouteNames} from '@/navigation/route-names';
 import {signUpValidation} from '@/utils/validate';
 import {ObjType} from '@/types';
 import useForm from '@/hooks/useForm';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import {saveTokens, saveUserInfo} from '@/utils/auth';
 
 const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
   const initialState = useMemo(
@@ -38,10 +38,9 @@ const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
   } = useSignUpUser({
     onSuccess: async data => {
       const {token, refreshToken, ...rest} = data;
-      await EncryptedStorage.setItem('token', token);
-      await EncryptedStorage.setItem('refreshToken', refreshToken);
-      await EncryptedStorage.setItem('myInfo', JSON.stringify(rest));
-      // go home
+      saveTokens({accessToken: token, refreshToken});
+      saveUserInfo({...rest});
+      // TODO: go home route
     },
     onError: error => {
       console.error('SignUp Error: ', error);

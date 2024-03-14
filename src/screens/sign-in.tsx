@@ -14,8 +14,14 @@ import {useSignInUser} from '@/api/auth/post-sign-in';
 import {signInValidation} from '@/utils/validate';
 import useForm from '@/hooks/useForm';
 import {ObjType} from '@/types';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {useGetMyInfo} from '@/api/auth';
+import {
+  clearStorage,
+  loadTokens,
+  loadUserInfo,
+  saveTokens,
+  saveUserInfo,
+} from '@/utils/auth';
 
 const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const initialState = useMemo(
@@ -35,10 +41,9 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   } = useSignInUser({
     onSuccess: async data => {
       const {token, refreshToken, ...rest} = data;
-      await EncryptedStorage.setItem('token', token);
-      await EncryptedStorage.setItem('refreshToken', refreshToken);
-      await EncryptedStorage.setItem('myInfo', JSON.stringify(rest));
-      // go home
+      saveTokens({accessToken: token, refreshToken});
+      saveUserInfo({...rest});
+      // TODO: go home route
     },
     onError: error => {
       console.error('SignIn Error: ', error);
@@ -125,9 +130,6 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
         </Pressable>
         <Pressable onPress={toSignUp}>
           <Text>회원가입하기</Text>
-        </Pressable>
-        <Pressable onPress={getUserInfo}>
-          <Text>내 정보 호출 (토큰 테스트)</Text>
         </Pressable>
       </View>
     </DismissKeyboardView>
