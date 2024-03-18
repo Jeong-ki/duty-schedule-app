@@ -14,3 +14,11 @@ export interface MyInfo {
   username: string;
   created_at: string;
 }
+
+export interface RefreshUser {
+  id: number;
+  email: string;
+  username: string;
+  newAccessToken: string;
+  newRefreshToken: string;
+}

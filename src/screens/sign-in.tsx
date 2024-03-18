@@ -14,7 +14,6 @@ import {useSignInUser} from '@/api/auth/post-sign-in';
 import {signInValidation} from '@/utils/validate';
 import useForm from '@/hooks/useForm';
 import {ObjType} from '@/types';
-import {useGetMyInfo} from '@/api/auth';
 import {saveRefreshToken} from '@/utils/auth';
 import {useUserStore} from '@/stores/useUserStore';
 import {Button} from '@/components/elements';
@@ -43,7 +42,6 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
     },
     onError: signInError => {
       console.error('SignIn Error: ', signInError);
-      console.log(signInError);
     },
   });
 

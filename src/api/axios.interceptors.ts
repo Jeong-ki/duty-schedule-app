@@ -1,4 +1,3 @@
-// import {clearStorage, loadTokens, saveTokens} from '@/utils/auth';
 import {
   AxiosError,
   AxiosInstance,
@@ -40,10 +39,20 @@ export const setInterceptors = (instance: AxiosInstance) => {
           const refreshToken = await loadRefreshToken();
           if (refreshToken) {
             try {
-              const response = await api.post('/auth/refresh-token', {
+              const response = await api.post('/auth/refresh-user', {
                 refreshToken: refreshToken,
               });
-              const {newAccessToken, newRefreshToken} = response.data;
+              const {id, email, username, newAccessToken, newRefreshToken} =
+                response.data;
+
+              useUserStore.getState().setUser({
+                id,
+                email,
+                username,
+                accessToken: newAccessToken,
+              });
+              console.log('refresh', response.data);
+
               await saveRefreshToken(newRefreshToken);
               if (originalRequest.headers) {
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
