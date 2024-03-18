@@ -15,9 +15,11 @@ import {RouteNames} from '@/navigation/route-names';
 import {signUpValidation} from '@/utils/validate';
 import {ObjType} from '@/types';
 import useForm from '@/hooks/useForm';
-import {saveTokens, saveUserInfo} from '@/utils/auth';
+import {saveRefreshToken} from '@/utils/auth';
+import {useUserStore} from '@/stores/useUserStore';
 
 const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
+  const setUser = useUserStore(state => state.setUser);
   const initialState = useMemo(
     () => ({
       username: '',
@@ -37,10 +39,9 @@ const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
     error,
   } = useSignUpUser({
     onSuccess: async data => {
-      const {token, refreshToken, ...rest} = data;
-      saveTokens({accessToken: token, refreshToken});
-      saveUserInfo({...rest});
-      // TODO: go home route
+      const {refreshToken, ...rest} = data;
+      saveRefreshToken(refreshToken);
+      setUser(rest);
     },
     onError: error => {
       console.error('SignUp Error: ', error);

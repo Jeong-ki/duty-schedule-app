@@ -2,7 +2,7 @@ export interface SignUp {
   id: number;
   email: string;
   username: string;
-  token: string;
+  accessToken: string;
   refreshToken: string;
 }
 

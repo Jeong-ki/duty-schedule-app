@@ -15,15 +15,11 @@ import {signInValidation} from '@/utils/validate';
 import useForm from '@/hooks/useForm';
 import {ObjType} from '@/types';
 import {useGetMyInfo} from '@/api/auth';
-import {
-  clearStorage,
-  loadTokens,
-  loadUserInfo,
-  saveTokens,
-  saveUserInfo,
-} from '@/utils/auth';
+import {saveRefreshToken} from '@/utils/auth';
+import {useUserStore} from '@/stores/useUserStore';
 
 const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
+  const setUser = useUserStore(state => state.setUser);
   const initialState = useMemo(
     () => ({
       email: '',
@@ -40,17 +36,15 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
     error,
   } = useSignInUser({
     onSuccess: async data => {
-      const {token, refreshToken, ...rest} = data;
-      saveTokens({accessToken: token, refreshToken});
-      saveUserInfo({...rest});
-      // TODO: go home route
+      const {refreshToken, ...rest} = data;
+      saveRefreshToken(refreshToken);
+      setUser(rest);
     },
-    onError: error => {
-      console.error('SignIn Error: ', error);
+    onError: signInError => {
+      console.error('SignIn Error: ', signInError);
+      console.log(signInError);
     },
   });
-
-  const {data, refetch} = useGetMyInfo({enabled: false});
 
   const handleSubmit = useCallback(
     (values: ObjType) => {
@@ -70,10 +64,6 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   }, [navigation]);
 
   const canGoNext: boolean = Object.values(values).every(value => value !== '');
-
-  const getUserInfo = () => {
-    refetch();
-  };
 
   return (
     <DismissKeyboardView>

@@ -15,13 +15,13 @@ if (__DEV__) {
 }
 
 function App(): React.JSX.Element {
-  const user = useUserStore(state => state.user);
+  const isLoggedIn = useUserStore(state => !!state.user);
 
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          {user ? <AppStack /> : <LoginStack />}
+          {isLoggedIn ? <AppStack /> : <LoginStack />}
         </NavigationContainer>
       </QueryClientProvider>
     </ErrorBoundary>

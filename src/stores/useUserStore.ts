@@ -1,10 +1,10 @@
 import {create} from 'zustand';
 
 interface User {
-  name: string;
+  id: number;
+  username: string;
   email: string;
   accessToken: string;
-  refreshToken: string;
 }
 
 interface UserStore {

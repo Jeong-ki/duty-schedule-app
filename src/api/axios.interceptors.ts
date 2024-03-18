@@ -1,4 +1,4 @@
-import {loadTokens, saveTokens} from '@/utils/auth';
+// import {clearStorage, loadTokens, saveTokens} from '@/utils/auth';
 import {
   AxiosError,
   AxiosInstance,
@@ -6,13 +6,19 @@ import {
   InternalAxiosRequestConfig,
 } from 'axios';
 import {api} from './axios.instance';
+import {useUserStore} from '@/stores/useUserStore';
+import {
+  loadRefreshToken,
+  removeRefreshToken,
+  saveRefreshToken,
+} from '@/utils/auth';
 
 export const setInterceptors = (instance: AxiosInstance) => {
   instance.interceptors.request.use(
-    async (config: InternalAxiosRequestConfig) => {
-      const tokens = await loadTokens();
-      if (tokens) {
-        config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+    (config: InternalAxiosRequestConfig) => {
+      const user = useUserStore.getState().user;
+      if (user?.accessToken) {
+        config.headers.Authorization = `Bearer ${user?.accessToken}`;
       }
       return config;
     },
@@ -26,20 +32,21 @@ export const setInterceptors = (instance: AxiosInstance) => {
     async error => {
       if (error.response && error.config) {
         const originalRequest = error.config as AxiosRequestConfig;
-        if (error.response.status === 401 && !originalRequest._retry) {
-          const tokens = await loadTokens();
-          if (tokens && tokens.refreshToken) {
+        if (
+          error.response.status === 401 &&
+          error.response.data?.code === 'expired' &&
+          !originalRequest._retry
+        ) {
+          const refreshToken = await loadRefreshToken();
+          if (refreshToken) {
             try {
               const response = await api.post('/auth/refresh-token', {
-                refreshToken: tokens.refreshToken,
+                refreshToken: refreshToken,
               });
-              const {
-                newAccessToken: accessToken,
-                newRefreshToken: refreshToken,
-              } = response.data;
-              await saveTokens({accessToken, refreshToken});
+              const {newAccessToken, newRefreshToken} = response.data;
+              await saveRefreshToken(newRefreshToken);
               if (originalRequest.headers) {
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
               }
               return instance(originalRequest);
             } catch (refreshError) {
@@ -47,6 +54,9 @@ export const setInterceptors = (instance: AxiosInstance) => {
               return Promise.reject(refreshError);
             }
           }
+        } else {
+          useUserStore.getState().logout();
+          removeRefreshToken();
         }
       }
       return Promise.reject(error);
