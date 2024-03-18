@@ -5,7 +5,7 @@ import {AxiosError} from 'axios';
 import {ObjType} from '@/types';
 
 const signUpUser = async (signUpData: ObjType): Promise<SignUp> => {
-  return (await api.post<SignUp>('/auth/signUp', signUpData)).data;
+  return (await api.post<SignUp>('/auth/signup', signUpData)).data;
 };
 
 export const useSignUpUser = (

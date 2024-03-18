@@ -17,6 +17,7 @@ import {ObjType} from '@/types';
 import {useGetMyInfo} from '@/api/auth';
 import {saveRefreshToken} from '@/utils/auth';
 import {useUserStore} from '@/stores/useUserStore';
+import {Button} from '@/components/elements';
 
 const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const setUser = useUserStore(state => state.setUser);
@@ -104,20 +105,13 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
         <Text>{errors.password || ''}</Text>
       </View>
       <View style={styles.buttonZone}>
-        <Pressable
-          style={
-            !canGoNext
-              ? styles.loginButton
-              : StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
-          }
-          onPress={onSubmit}
-          disabled={!canGoNext}>
-          {isPending ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text style={styles.loginButtonText}>로그인</Text>
-          )}
-        </Pressable>
+        <Button
+          onClick={onSubmit}
+          isLoading={isPending}
+          disabled={!canGoNext}
+          width={90}>
+          로그인
+        </Button>
         <Pressable onPress={toSignUp}>
           <Text>회원가입하기</Text>
         </Pressable>

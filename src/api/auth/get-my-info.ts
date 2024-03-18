@@ -10,7 +10,7 @@ type UseGetMyInfoOptions = Omit<
 >;
 
 export const getMyInfo = async () => {
-  return (await tokenApi.get<MyInfo>('/auth/myInfo')).data;
+  return (await tokenApi.get<MyInfo>('/auth/my')).data;
 };
 
 export const useGetMyInfo = (options?: UseGetMyInfoOptions) => {
