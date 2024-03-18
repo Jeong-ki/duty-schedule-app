@@ -31,7 +31,7 @@ export default function AppInner() {
         await saveRefreshToken(newRefreshToken);
         setUser({id, email, username, accessToken});
       } catch (error) {
-        console.error('Fail RememberMe', error);
+        console.error('Fail RememberMe: ', error);
         await removeRefreshToken();
         logout();
       } finally {

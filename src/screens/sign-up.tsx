@@ -43,8 +43,8 @@ const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
       saveRefreshToken(refreshToken);
       setUser(rest);
     },
-    onError: error => {
-      console.error('SignUp Error: ', error);
+    onError: signUpError => {
+      console.error('SignUp Error: ', signUpError);
     },
   });
 

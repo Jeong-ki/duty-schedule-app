@@ -51,21 +51,20 @@ export const setInterceptors = (instance: AxiosInstance) => {
                 username,
                 accessToken: newAccessToken,
               });
-              console.log('refresh', response.data);
-
               await saveRefreshToken(newRefreshToken);
               if (originalRequest.headers) {
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
               }
               return instance(originalRequest);
             } catch (refreshError) {
-              console.error('Unable to refresh token', refreshError);
-              return Promise.reject(refreshError);
+              console.error('refreshError: ', refreshError);
+              await removeRefreshToken();
+              useUserStore.getState().logout();
             }
           }
         } else {
+          await removeRefreshToken();
           useUserStore.getState().logout();
-          removeRefreshToken();
         }
       }
       return Promise.reject(error);
