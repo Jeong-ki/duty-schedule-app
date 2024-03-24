@@ -1,4 +1,4 @@
-package com.dutyscheduleapp
+package com.multicalendarapp
 
 import android.app.Application
 import com.facebook.react.PackageList
