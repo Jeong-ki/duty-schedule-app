@@ -76,14 +76,14 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.dutyscheduleapp"
+    namespace "com.multicalendarapp"
     defaultConfig {
-        applicationId "com.dutyscheduleapp"
+        applicationId "com.multicalendarapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resValue "string", "build_config_package", "com.dutyscheduleapp"
+        resValue "string", "build_config_package", "com.multicalendarapp"
     }
     signingConfigs {
         debug {
