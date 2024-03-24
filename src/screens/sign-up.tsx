@@ -33,11 +33,7 @@ const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
   const usernameRef: MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
-  const {
-    mutate: signUpUser,
-    isPending,
-    error,
-  } = useSignUpUser({
+  const {mutate: signUpUser, isPending} = useSignUpUser({
     onSuccess: async data => {
       const {refreshToken, ...rest} = data;
       saveRefreshToken(refreshToken);
@@ -181,6 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorText: {
-    color: 'red',
+    color: '#ff003e',
   },
 });

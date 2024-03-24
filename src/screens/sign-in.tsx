@@ -1,11 +1,4 @@
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {MutableRefObject, useCallback, useMemo, useRef} from 'react';
 import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
 import {SignInScreenProps} from '@/navigation/types';
@@ -17,6 +10,7 @@ import {ObjType} from '@/types';
 import {saveRefreshToken} from '@/utils/auth';
 import {useUserStore} from '@/stores/useUserStore';
 import {Button} from '@/components/elements';
+import {isEmptyObj} from '@/utils';
 
 const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const setUser = useUserStore(state => state.setUser);
@@ -33,7 +27,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const {
     mutate: signInUser,
     isPending,
-    error,
+    isError,
   } = useSignInUser({
     onSuccess: async data => {
       const {refreshToken, ...rest} = data;
@@ -85,7 +79,6 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
           clearButtonMode="while-editing"
           keyboardType="email-address"
         />
-        <Text style={styles.errorText}>{errors.email || ''}</Text>
       </View>
       <View style={styles.inputWrapper}>
         <Text style={styles.label}>비밀번호</Text>
@@ -101,6 +94,11 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
           clearButtonMode="while-editing"
         />
         <Text>{errors.password || ''}</Text>
+        {(!isEmptyObj(errors) || isError) && (
+          <Text style={styles.errorText}>
+            이메일 또는 비밀번호를 잘못 입력했습니다.
+          </Text>
+        )}
       </View>
       <View style={styles.buttonZone}>
         <Button
@@ -155,6 +153,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorText: {
-    color: 'red',
+    color: '#ff003e',
   },
 });
