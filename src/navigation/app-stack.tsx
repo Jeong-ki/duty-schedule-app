@@ -3,22 +3,23 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StackParamList} from './types';
 import {HomeScreen, UserScreen} from '@/screens';
 import {RouteNames} from './route-names';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-const Tab = createBottomTabNavigator<StackParamList>();
+const Stack = createNativeStackNavigator<StackParamList>();
 
 export default function AppStack() {
   return (
-    <Tab.Navigator initialRouteName={RouteNames.home}>
-      <Tab.Screen
+    <Stack.Navigator initialRouteName={RouteNames.home}>
+      <Stack.Screen
         name={RouteNames.home}
         component={HomeScreen as React.ComponentType}
-        options={{title: '홈'}}
+        options={{headerShown: false}}
       />
-      <Tab.Screen
+      <Stack.Screen
         name={RouteNames.user}
         component={UserScreen as React.ComponentType}
         options={{headerShown: false}}
       />
-    </Tab.Navigator>
+    </Stack.Navigator>
   );
 }

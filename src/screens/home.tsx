@@ -1,30 +1,9 @@
-import {Text, View} from 'react-native';
-import React, {useCallback} from 'react';
-import {Button} from '@/components/elements';
-import {Modal} from '@/components/modal';
+import React from 'react';
 import {HomeScreenProps} from '@/navigation/types';
-import {RouteNames} from '@/navigation/route-names';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
-  const handleMoveDetails: () => void = useCallback((): void => {
-    navigation.navigate(RouteNames.user);
-  }, [navigation]);
-
-  return (
-    <>
-      <View
-        style={{flex: 1, alignItems: 'flex-end', backgroundColor: 'yellow'}}>
-        <Text>Home</Text>
-        <Button onClick={handleMoveDetails} text="Go Details" />
-      </View>
-      <View style={{flex: 2, backgroundColor: 'skyblue'}}>
-        <Text>Good2</Text>
-      </View>
-      <Modal onCloseModal={() => {}}>
-        <Text>Modal</Text>
-      </Modal>
-    </>
-  );
+  return <SafeAreaView>Calendar</SafeAreaView>;
 };
 
 export default HomeScreen;
