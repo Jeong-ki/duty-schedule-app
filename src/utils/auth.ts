@@ -15,7 +15,7 @@ export async function loadRefreshToken(): Promise<string | null> {
       return refreshToken;
     }
   } catch (error) {
-    console.log('Error loading the tokens', error);
+    console.error('Error loading the tokens', error);
   }
   return null;
 }
