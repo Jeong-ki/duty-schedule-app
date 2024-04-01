@@ -1,3 +1,4 @@
+import {EN_MONTH, EN_WEEK, KR_MONTH, KR_WEEK} from '@/constants';
 import {chunkArray} from '@/utils';
 import {
   getCurrentDate,
@@ -7,9 +8,13 @@ import {
 } from '@/utils/calendar';
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {getCountry} from 'react-native-localize';
 
 export const Calendar = () => {
   const [date, setDate] = useState(getCurrentDate(new Date()));
+  const isKr: boolean = getCountry() === 'KR';
+  const daysOfWeek = isKr ? KR_WEEK : EN_WEEK;
+  const months = isKr ? KR_MONTH : EN_MONTH;
 
   const handlePrevMonth = () => {
     setDate(prevDate => getPrevMonth(prevDate));
@@ -24,20 +29,24 @@ export const Calendar = () => {
         <Pressable onPress={handlePrevMonth}>
           <Text>{'<'}</Text>
         </Pressable>
-        <Text style={styles.month}>{date.month}월</Text>
+        <Text style={styles.month}>{months[date.month - 1]}</Text>
         <Pressable onPress={handleNextMonth}>
           <Text>{'>'}</Text>
         </Pressable>
       </View>
       <View style={styles.table}>
         <View style={styles.thead}>
-          <Text style={[styles.cellHead, styles.sunday]}>일</Text>
-          <Text style={styles.cellHead}>월</Text>
-          <Text style={styles.cellHead}>화</Text>
-          <Text style={styles.cellHead}>수</Text>
-          <Text style={styles.cellHead}>목</Text>
-          <Text style={styles.cellHead}>금</Text>
-          <Text style={[styles.cellHead, styles.saturday]}>토</Text>
+          {daysOfWeek.map((day, index) => (
+            <Text
+              key={day}
+              style={[
+                styles.cellHead,
+                index === 0 && styles.sunday,
+                index === 6 && isKr && styles.saturday,
+              ]}>
+              {day}
+            </Text>
+          ))}
         </View>
         <View style={styles.tbody}>
           {chunkArray(getMonthDate(date), 7).map((chunk, chunkIdx) => (
@@ -48,7 +57,7 @@ export const Calendar = () => {
                     style={[
                       styles.day,
                       idx === 0 && styles.sunday,
-                      idx === 6 && styles.saturday,
+                      idx === 6 && isKr && styles.saturday,
                       item?.isOtherMonth && styles.otherMonth,
                     ]}>
                     {item.day}
