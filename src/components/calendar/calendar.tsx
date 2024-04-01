@@ -1,4 +1,4 @@
-import {EN_MONTH, EN_WEEK, KR_MONTH, KR_WEEK} from '@/constants';
+import {countryCalendarMap} from '@/constants/calendar';
 import {chunkArray} from '@/utils';
 import {
   getCurrentDate,
@@ -12,9 +12,10 @@ import {getCountry} from 'react-native-localize';
 
 export const Calendar = () => {
   const [date, setDate] = useState(getCurrentDate(new Date()));
-  const isKr: boolean = getCountry() === 'KR';
-  const daysOfWeek = isKr ? KR_WEEK : EN_WEEK;
-  const months = isKr ? KR_MONTH : EN_MONTH;
+  const country = getCountry();
+  const isKr: boolean = country === 'KR';
+  const {months, weekDays} =
+    countryCalendarMap[country] || countryCalendarMap.EN;
 
   const handlePrevMonth = () => {
     setDate(prevDate => getPrevMonth(prevDate));
@@ -36,7 +37,7 @@ export const Calendar = () => {
       </View>
       <View style={styles.table}>
         <View style={styles.thead}>
-          {daysOfWeek.map((day, index) => (
+          {weekDays.map((day, index) => (
             <Text
               key={day}
               style={[

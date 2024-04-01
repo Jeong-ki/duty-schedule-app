@@ -1,4 +1,4 @@
-import {DAYS_IN_MONTH} from '@/constants';
+import {DAYS_IN_MONTH} from '@/constants/calendar';
 
 const getCurrentDate = (date: Date) => ({
   year: date.getFullYear(),
