@@ -62,7 +62,13 @@ export const Calendar = () => {
                     ]}>
                     {item.day}
                   </Text>
-                  <Text />
+                  <Text
+                    style={[
+                      styles.memo,
+                      item?.isOtherMonth && styles.otherMonth,
+                    ]}>
+                    메모...
+                  </Text>
                 </View>
               ))}
             </View>
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
   },
   table: {
     flex: 1,
-    padding: 10,
+    padding: 5,
   },
   thead: {
     flexDirection: 'row',
@@ -98,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     textAlign: 'center',
-    fontSize: 13,
+    fontSize: 12,
   },
   tbody: {
     flex: 1,
@@ -113,7 +119,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   day: {
-    paddingTop: 5,
+    fontSize: 12,
+    paddingVertical: 5,
     fontWeight: '500',
     textAlign: 'center',
   },
@@ -125,5 +132,9 @@ const styles = StyleSheet.create({
   },
   otherMonth: {
     opacity: 0.3,
+  },
+  memo: {
+    fontSize: 11,
+    paddingHorizontal: 1,
   },
 });
