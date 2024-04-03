@@ -1,39 +1,36 @@
 import {countryCalendarMap} from '@/constants/calendar';
-import {chunkArray} from '@/utils';
-import {
-  getCurrentDate,
-  getMonthDate,
-  getNextMonth,
-  getPrevMonth,
-} from '@/utils/calendar';
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {getCountry} from 'react-native-localize';
+import {CalendarInner} from './calendarInner';
+import Swiper from 'react-native-swiper';
 
 export const Calendar = () => {
-  const [date, setDate] = useState(getCurrentDate(new Date()));
   const country = getCountry();
   const isKr: boolean = country === 'KR';
   const {months, weekDays} =
     countryCalendarMap[country] || countryCalendarMap.EN;
+  const [currentDate, setCurrentDate] = useState(new Date());
 
-  const handlePrevMonth = () => {
-    setDate(prevDate => getPrevMonth(prevDate));
+  const handleSwipeMonth = (index: number) => {
+    const date = new Date(currentDate);
+    date.setMonth(date.getMonth() + (index - 1));
+    setCurrentDate(date);
   };
-  const handleNextMonth = () => {
-    setDate(prevDate => getNextMonth(prevDate));
+
+  const getCalendarProps = (offset: number) => {
+    const date = new Date(currentDate);
+    date.setMonth(date.getMonth() + offset);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+    };
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Pressable onPress={handlePrevMonth}>
-          <Text>{'<'}</Text>
-        </Pressable>
-        <Text style={styles.month}>{months[date.month - 1]}</Text>
-        <Pressable onPress={handleNextMonth}>
-          <Text>{'>'}</Text>
-        </Pressable>
+        <Text style={styles.month}>{months[currentDate.getMonth()]}</Text>
       </View>
       <View style={styles.table}>
         <View style={styles.thead}>
@@ -49,32 +46,16 @@ export const Calendar = () => {
             </Text>
           ))}
         </View>
-        <View style={styles.tbody}>
-          {chunkArray(getMonthDate(date), 7).map((chunk, chunkIdx) => (
-            <View key={chunkIdx} style={styles.cellRow}>
-              {chunk.map((item, idx) => (
-                <View key={item.day} style={styles.cell}>
-                  <Text
-                    style={[
-                      styles.day,
-                      idx === 0 && styles.sunday,
-                      idx === 6 && isKr && styles.saturday,
-                      item?.isOtherMonth && styles.otherMonth,
-                    ]}>
-                    {item.day}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.memo,
-                      item?.isOtherMonth && styles.otherMonth,
-                    ]}>
-                    메모...
-                  </Text>
-                </View>
-              ))}
-            </View>
-          ))}
-        </View>
+        <Swiper
+          key={currentDate.getMonth()}
+          loop={false}
+          index={1}
+          onIndexChanged={index => handleSwipeMonth(index)}
+          showsPagination={false}>
+          <CalendarInner {...getCalendarProps(-1)} />
+          <CalendarInner {...getCalendarProps(0)} />
+          <CalendarInner {...getCalendarProps(1)} />
+        </Swiper>
       </View>
     </View>
   );
@@ -106,24 +87,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     textAlign: 'center',
     fontSize: 12,
-  },
-  tbody: {
-    flex: 1,
-  },
-  cellRow: {
-    flex: 1,
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-  },
-  cell: {
-    flex: 1,
-  },
-  day: {
-    fontSize: 12,
-    paddingVertical: 5,
-    fontWeight: '500',
-    textAlign: 'center',
   },
   saturday: {
     color: '#1b56cb',
