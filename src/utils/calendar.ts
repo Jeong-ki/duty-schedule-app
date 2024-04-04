@@ -9,7 +9,13 @@ const getFirstDayOfWeek = (year: number, month: number): number => {
   return new Date(`${year}-${curMonth}-01`).getDay();
 };
 
-const getMonthDate = ({year, month}: {year: number; month: number}): any[] => {
+const getMonthDate = ({
+  year,
+  month,
+}: {
+  year: number;
+  month: number;
+}): {year: number; month: number; day: number; isOtherMonth: boolean}[] => {
   const monthDay = [...DAYS_IN_MONTH];
   if (checkLeapYear(year)) {
     monthDay[1] = 29;
@@ -19,21 +25,41 @@ const getMonthDate = ({year, month}: {year: number; month: number}): any[] => {
   const prevMonthLastDay = monthDay[(month + 11) % 12];
 
   const prevMonthDays = Array.from({length: firstDayOfWeek}, (_, i) => {
-    return {day: String(prevMonthLastDay - i), isOtherMonth: true};
+    return {
+      year,
+      month: month - 1,
+      day: prevMonthLastDay - i,
+      isOtherMonth: true,
+    };
   }).reverse();
 
   const currentMonthDays = Array.from({length: monthDay[month]}, (_, i) => {
-    return {day: String(i + 1)};
+    return {year, month, day: i + 1, isOtherMonth: false};
   });
 
   const totalDisplayedDays = prevMonthDays.length + currentMonthDays.length;
   const remainDay = 7 - (totalDisplayedDays % 7);
 
   const nextMonthDays = Array.from({length: remainDay}, (_, i) => {
-    return {day: String(i + 1), isOtherMonth: true};
+    return {year, month: month + 1, day: i + 1, isOtherMonth: true};
   }).slice(0, remainDay < 7 ? remainDay : 0);
 
   return [...prevMonthDays, ...currentMonthDays, ...nextMonthDays];
 };
 
-export {getMonthDate};
+interface ITargetDay {
+  year: number;
+  month: number;
+  day: number;
+}
+const isToday = ({year, month, day}: ITargetDay) => {
+  const targetDate = new Date(year, month, day);
+  const today = new Date();
+
+  targetDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  return targetDate.getTime() === today.getTime();
+};
+
+export {getMonthDate, isToday};
