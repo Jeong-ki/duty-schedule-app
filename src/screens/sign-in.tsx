@@ -6,11 +6,11 @@ import {RouteNames} from '@/navigation/route-names';
 import {useSignInUser} from '@/api/auth/post-sign-in';
 import {signInValidation} from '@/utils/validate';
 import useForm from '@/hooks/useForm';
-import {ObjType} from '@/types';
 import {saveRefreshToken} from '@/utils/auth';
 import {useUserStore} from '@/stores/useUserStore';
 import {Button} from '@/components/elements';
 import {isEmptyObj} from '@/utils';
+import {ISignInReq} from '@/api/auth/types';
 
 const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   const setUser = useUserStore(state => state.setUser);
@@ -40,7 +40,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
   });
 
   const handleSubmit = useCallback(
-    (values: ObjType) => {
+    (values: ISignInReq) => {
       signInUser(values);
     },
     [signInUser],

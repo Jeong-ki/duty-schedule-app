@@ -1,5 +1,3 @@
-import {ObjType} from '@/types';
-
 const validateEmail = (email: string): boolean => {
   const regex =
     /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
@@ -11,8 +9,13 @@ const validatePassword = (password: string): boolean => {
   return regex.test(password);
 };
 
-const signInValidation = (state: ObjType) => {
-  const errors: ObjType = {};
+interface ISignInState {
+  email: string;
+  password: string;
+}
+const signInValidation = <T extends ISignInState>(state: T) => {
+  const errors: Partial<Record<keyof T, string>> = {};
+
   if (state.email === '') {
     errors.email = 'Email을 입력해주세요.';
   }
@@ -25,8 +28,14 @@ const signInValidation = (state: ObjType) => {
   return errors;
 };
 
-const signUpValidation = (state: ObjType) => {
-  const errors: ObjType = {};
+interface ISignUpState {
+  email: string;
+  username: string;
+  password: string;
+}
+const signUpValidation = <T extends ISignUpState>(state: T) => {
+  const errors: Partial<Record<keyof T, string>> = {};
+
   if (state.email === '') {
     errors.email = 'Email을 입력해주세요.';
   }

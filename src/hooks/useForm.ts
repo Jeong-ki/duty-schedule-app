@@ -1,18 +1,21 @@
-import {ObjType} from '@/types';
 import {isEmptyObj} from '@/utils';
 import {useCallback, useState} from 'react';
 
-type UseFormType = {
-  initialValues: ObjType;
-  handleSubmit: (value: ObjType) => void;
-  validation?: (value: ObjType) => ObjType;
-};
+interface IUseFormType<T> {
+  initialValues: T;
+  handleSubmit: (value: T) => void;
+  validation?: (value: T) => Partial<Record<keyof T, string>>;
+}
 
-const useForm = ({initialValues, handleSubmit, validation}: UseFormType) => {
-  const [values, setValues] = useState<ObjType>(initialValues);
-  const [errors, setErrors] = useState<ObjType>({});
+const useForm = <T extends Record<string, any>>({
+  initialValues,
+  handleSubmit,
+  validation,
+}: IUseFormType<T>) => {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
 
-  const onChange = useCallback((name: string, value: string) => {
+  const onChange = useCallback((name: keyof T, value: string) => {
     setValues(prev => ({
       ...prev,
       [name]: value.trim(),

@@ -13,10 +13,10 @@ import {SignUpScreenProps} from '@/navigation/types';
 import {useSignUpUser} from '@/api/auth/post-sign-up';
 import {RouteNames} from '@/navigation/route-names';
 import {signUpValidation} from '@/utils/validate';
-import {ObjType} from '@/types';
 import useForm from '@/hooks/useForm';
 import {saveRefreshToken} from '@/utils/auth';
 import {useUserStore} from '@/stores/useUserStore';
+import {ISignUpReq} from '@/api/auth/types';
 
 const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
   const setUser = useUserStore(state => state.setUser);
@@ -45,7 +45,7 @@ const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
   });
 
   const handleSubmit = useCallback(
-    (values: ObjType) => {
+    (values: ISignUpReq) => {
       signUpUser(values);
     },
     [signUpUser],

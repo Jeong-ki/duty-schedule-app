@@ -1,15 +1,14 @@
 import {UseMutationOptions, useMutation} from '@tanstack/react-query';
 import {api} from '../axios.instance';
-import {SignUp} from './types';
+import {ISignUpReq, ISignUpRes} from './types';
 import {AxiosError} from 'axios';
-import {ObjType} from '@/types';
 
-const signUpUser = async (signUpData: ObjType): Promise<SignUp> => {
-  return (await api.post<SignUp>('/auth/signup', signUpData)).data;
+const signUpUser = async (signUpData: ISignUpReq): Promise<ISignUpRes> => {
+  return (await api.post<ISignUpRes>('/auth/signup', signUpData)).data;
 };
 
 export const useSignUpUser = (
-  options?: UseMutationOptions<SignUp, AxiosError, ObjType>,
+  options?: UseMutationOptions<ISignUpRes, AxiosError, ISignUpReq>,
 ) => {
   return useMutation({
     mutationFn: signUpUser,

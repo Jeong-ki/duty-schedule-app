@@ -1,21 +1,29 @@
-export interface SignUp {
+export interface ISignUpReq {
+  email: string;
+  username: string;
+  password: string;
+}
+export interface ISignUpRes {
   id: number;
   email: string;
   username: string;
   accessToken: string;
   refreshToken: string;
 }
+export interface ISignInReq {
+  email: string;
+  password: string;
+}
+export interface ISignInRes extends ISignUpRes {}
 
-export interface SignIn extends SignUp {}
-
-export interface MyInfo {
+export interface IMyInfo {
   id: number;
   email: string;
   username: string;
   created_at: string;
 }
 
-export interface RefreshUser {
+export interface IRefreshUser {
   id: number;
   email: string;
   username: string;
