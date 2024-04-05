@@ -1,6 +1,5 @@
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StackParamList} from './types';
+import type {StackParamList} from './types';
 import {HomeScreen, UserScreen} from '@/screens';
 import {RouteNames} from './route-names';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';

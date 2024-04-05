@@ -1,11 +1,11 @@
 import React from 'react';
 import {Text, View} from 'react-native';
-import {UserScreenProps} from '@/navigation/types';
 import {Button} from '@/components/elements';
-import {useUserStore} from '@/stores/useUserStore';
-import {removeRefreshToken} from '@/utils/auth';
+import {useUserStore} from '@/stores';
+import {removeRefreshToken} from '@/utils';
+import type {UserScreenProps} from '@/navigation/types';
 
-const UserScreen: React.FC<UserScreenProps> = ({navigation}) => {
+const UserScreen = ({navigation}: UserScreenProps) => {
   const {logout, user} = useUserStore();
 
   const handleLogout = async () => {

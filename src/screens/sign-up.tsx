@@ -9,16 +9,15 @@ import {
   View,
 } from 'react-native';
 import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
-import {SignUpScreenProps} from '@/navigation/types';
-import {useSignUpUser} from '@/api/auth/post-sign-up';
+import {useSignUpUser} from '@/api/auth';
 import {RouteNames} from '@/navigation/route-names';
-import {signUpValidation} from '@/utils/validate';
-import useForm from '@/hooks/useForm';
-import {saveRefreshToken} from '@/utils/auth';
-import {useUserStore} from '@/stores/useUserStore';
-import {ISignUpReq} from '@/api/auth/types';
+import {signUpValidation, saveRefreshToken} from '@/utils';
+import {useForm} from '@/hooks';
+import {useUserStore} from '@/stores';
+import type {SignUpScreenProps} from '@/navigation/types';
+import type {ISignUpReq} from '@/api/auth/types';
 
-const SignUp: React.FC<SignUpScreenProps> = ({navigation}) => {
+const SignUp = ({navigation}: SignUpScreenProps) => {
   const setUser = useUserStore(state => state.setUser);
   const initialState = useMemo(
     () => ({

@@ -1,18 +1,16 @@
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {MutableRefObject, useCallback, useMemo, useRef} from 'react';
-import DismissKeyboardView from '@/components/layout/dismiss-keyboard-view';
-import {SignInScreenProps} from '@/navigation/types';
+import {DismissKeyboardView} from '@/components/layout';
 import {RouteNames} from '@/navigation/route-names';
-import {useSignInUser} from '@/api/auth/post-sign-in';
-import {signInValidation} from '@/utils/validate';
-import useForm from '@/hooks/useForm';
-import {saveRefreshToken} from '@/utils/auth';
-import {useUserStore} from '@/stores/useUserStore';
+import {useSignInUser} from '@/api/auth';
+import {signInValidation, saveRefreshToken, isEmptyObj} from '@/utils';
+import {useForm} from '@/hooks';
+import {useUserStore} from '@/stores';
 import {Button} from '@/components/elements';
-import {isEmptyObj} from '@/utils';
-import {ISignInReq} from '@/api/auth/types';
+import type {SignInScreenProps} from '@/navigation/types';
+import type {ISignInReq} from '@/api/auth/types';
 
-const SignInScreen: React.FC<SignInScreenProps> = ({navigation}) => {
+const SignInScreen = ({navigation}: SignInScreenProps) => {
   const setUser = useUserStore(state => state.setUser);
   const initialState = useMemo(
     () => ({

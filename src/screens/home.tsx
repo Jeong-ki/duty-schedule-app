@@ -1,10 +1,10 @@
 import React from 'react';
-import {HomeScreenProps} from '@/navigation/types';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {StyleSheet} from 'react-native';
 import {Calendar} from '@/components/calendar';
+import type {HomeScreenProps} from '@/navigation/types';
 
-const HomeScreen: React.FC<HomeScreenProps> = () => {
+const HomeScreen = ({}: HomeScreenProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <Calendar />

@@ -1,11 +1,11 @@
 import {Text, View} from 'react-native';
 import React, {useCallback} from 'react';
 import {Button} from '@/components/elements';
-import {Modal} from '@/components/modal';
-import {HomeScreenProps} from '@/navigation/types';
 import {RouteNames} from '@/navigation/route-names';
+import {Modal} from '@/components/modal';
+import type {HomeScreenProps} from '@/navigation/types';
 
-const TestScreen: React.FC<HomeScreenProps> = ({navigation}) => {
+const TestScreen = ({navigation}: HomeScreenProps) => {
   const handleMoveDetails: () => void = useCallback((): void => {
     navigation.navigate(RouteNames.user);
   }, [navigation]);

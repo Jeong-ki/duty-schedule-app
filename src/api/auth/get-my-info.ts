@@ -1,16 +1,16 @@
 import {UseQueryOptions, useQuery} from '@tanstack/react-query';
 import {tokenApi} from '../axios.instance';
-import {MyInfo} from './types';
+import {IMyInfo} from './types';
 import {AxiosError} from 'axios';
 import {authKeyFactory} from './key-factory';
 
 type UseGetMyInfoOptions = Omit<
-  UseQueryOptions<MyInfo, AxiosError, MyInfo, readonly [string]>,
+  UseQueryOptions<IMyInfo, AxiosError, IMyInfo, readonly [string]>,
   'queryKey'
 >;
 
-export const getMyInfo = async () => {
-  return (await tokenApi.get<MyInfo>('/auth/my')).data;
+const getMyInfo = async () => {
+  return (await tokenApi.get<IMyInfo>('/auth/my')).data;
 };
 
 export const useGetMyInfo = (options?: UseGetMyInfoOptions) => {

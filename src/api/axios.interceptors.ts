@@ -5,12 +5,8 @@ import {
   InternalAxiosRequestConfig,
 } from 'axios';
 import {api} from './axios.instance';
-import {useUserStore} from '@/stores/useUserStore';
-import {
-  loadRefreshToken,
-  removeRefreshToken,
-  saveRefreshToken,
-} from '@/utils/auth';
+import {useUserStore} from '@/stores';
+import {loadRefreshToken, removeRefreshToken, saveRefreshToken} from '@/utils';
 
 export const setInterceptors = (instance: AxiosInstance) => {
   instance.interceptors.request.use(

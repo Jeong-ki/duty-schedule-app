@@ -1,8 +1,8 @@
-import {countryCalendarMap} from '@/constants/calendar';
+import {countryCalendarMap} from '@/constants';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {getCountry} from 'react-native-localize';
-import {CalendarInner} from './calendarInner';
+import {CalendarInner} from './calendar-inner';
 import Swiper from 'react-native-swiper';
 
 export const Calendar = () => {

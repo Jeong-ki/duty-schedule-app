@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import ErrorBoundary from '@/components/layout/error-boundary';
+import {ErrorBoundary} from '@/components/layout';
 import AppInner from './AppInner';
 
 const queryClient = new QueryClient();

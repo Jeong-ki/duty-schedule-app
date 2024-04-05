@@ -1,11 +1,11 @@
 import React from 'react';
 import {Button, StyleSheet, Text, View} from 'react-native';
 
-type Props = {
+interface IErrorScreenProps {
   resetError: () => void;
-};
+}
 
-const ErrorScreen: React.FC<Props> = ({resetError}) => {
+const ErrorScreen = ({resetError}: IErrorScreenProps) => {
   return (
     <View style={styles.flexCenter}>
       <View style={styles.flexCenter}>

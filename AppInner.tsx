@@ -1,13 +1,9 @@
 import React, {useEffect} from 'react';
-import {useUserStore} from '@/stores/useUserStore';
+import {useUserStore} from '@/stores';
 import AppStack from '@/navigation/app-stack';
 import LoginStack from '@/navigation/login-stack';
-import {
-  loadRefreshToken,
-  removeRefreshToken,
-  saveRefreshToken,
-} from '@/utils/auth';
-import {refreshUser} from '@/api/auth/post-refresh-user';
+import {loadRefreshToken, removeRefreshToken, saveRefreshToken} from '@/utils';
+import {refreshUser} from '@/api/auth';
 
 export default function AppInner() {
   const {user, setUser, logout} = useUserStore();
