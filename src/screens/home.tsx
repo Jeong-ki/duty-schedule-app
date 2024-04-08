@@ -3,11 +3,16 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {StyleSheet} from 'react-native';
 import {Calendar} from '@/components/calendar';
 import type {HomeScreenProps} from '@/navigation/types';
+import {Modal} from '@/components/modal';
+import {useModalStore} from '@/stores/useModalStore';
 
 const HomeScreen = ({}: HomeScreenProps) => {
+  const {isOpen} = useModalStore();
+
   return (
     <SafeAreaView style={styles.container}>
       <Calendar />
+      {isOpen && <Modal />}
     </SafeAreaView>
   );
 };

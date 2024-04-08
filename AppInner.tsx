@@ -13,7 +13,7 @@ export default function AppInner() {
       try {
         const refreshToken = await loadRefreshToken();
         if (!refreshToken) {
-          // SplashScreen.hide();
+          // SplashScreen.hide(); TODO: SplashScreen 구현 필요
           return;
         }
         const response = await refreshUser(refreshToken);
@@ -31,11 +31,11 @@ export default function AppInner() {
         await removeRefreshToken();
         logout();
       } finally {
-        // SplashScreen.hide();
+        // SplashScreen.hide(); TODO: SplashScreen 구현 필요
       }
     };
     rememberMe();
   }, [logout, setUser]);
 
-  return <>{user ? <AppStack /> : <LoginStack />}</>;
+  return user ? <AppStack /> : <LoginStack />;
 }

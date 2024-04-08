@@ -1,12 +1,12 @@
-interface User {
+interface IUser {
   id: number;
   username: string;
   email: string;
   accessToken: string;
 }
 
-export interface UserStore {
-  user: User | null;
-  setUser: (user: User) => void;
+export interface IUserState {
+  user: IUser | null;
+  setUser: (user: IUser) => void;
   logout: () => void;
 }

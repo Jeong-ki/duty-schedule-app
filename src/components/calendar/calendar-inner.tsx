@@ -3,10 +3,18 @@ import {chunkArray, getMonthDate, isToday} from '@/utils';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import type {CalendarInnerProps} from './types';
 import {getCountry} from 'react-native-localize';
+import {useModalStore} from '@/stores/useModalStore';
+import {ITargetDay} from '@/utils/calendar/types';
 
 export const CalendarInner = ({year, month}: CalendarInnerProps) => {
+  const {setItem, onOpen} = useModalStore();
   const country = getCountry();
   const isKr: boolean = country === 'KR';
+
+  const handleOpenModal = (item: ITargetDay) => () => {
+    setItem({...item, memo: '메모 테스트', color: ''});
+    onOpen(true);
+  };
 
   return (
     <View style={styles.tbody}>
@@ -16,7 +24,7 @@ export const CalendarInner = ({year, month}: CalendarInnerProps) => {
             <Pressable
               key={item.day}
               style={styles.cell}
-              onPress={() => console.log(item)}>
+              onPress={handleOpenModal(item)}>
               <View style={styles.dayBox}>
                 <View style={[isToday(item) && styles.today]}>
                   <Text

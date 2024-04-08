@@ -1,21 +1,69 @@
-import React from 'react';
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
-import type {IModalProps} from './types';
+import React, {useEffect, useState} from 'react';
+import {
+  Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {useModalStore} from '@/stores/useModalStore';
 
-export const Modal = ({children, onCloseModal}: IModalProps) => {
+export const Modal = () => {
+  const {item, onOpen} = useModalStore();
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  const handleOutsidePress = () => {
+    if (isKeyboardVisible) {
+      Keyboard.dismiss();
+    } else {
+      onOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      },
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
-    <Pressable onPress={onCloseModal} style={styles.modal}>
-      <Pressable style={styles.modalInner}>
-        <View style={styles.innerContent}>{children}</View>
-        <View style={styles.buttonWrapper}>
-          <Pressable style={styles.button}>
-            <Text>네</Text>
-          </Pressable>
-          <Pressable style={styles.button}>
-            <Text>아니오</Text>
-          </Pressable>
-        </View>
-      </Pressable>
+    <Pressable onPress={handleOutsidePress} style={styles.modal}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingView}>
+        <Pressable style={styles.modalInner}>
+          <View style={styles.innerContent}>
+            <Text>{item?.memo}</Text>
+          </View>
+          <View style={styles.buttonWrapper}>
+            <TextInput placeholder="input test" />
+            <Pressable onPress={() => console.log('yes')} style={styles.button}>
+              <Text>네</Text>
+            </Pressable>
+            <Pressable style={styles.button}>
+              <Text>아니오</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </KeyboardAvoidingView>
     </Pressable>
   );
 };
@@ -24,6 +72,11 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: 'rgba(52, 52, 52, 0.4)',
     ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },

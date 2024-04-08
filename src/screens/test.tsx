@@ -2,7 +2,6 @@ import {Text, View} from 'react-native';
 import React, {useCallback} from 'react';
 import {Button} from '@/components/elements';
 import {RouteNames} from '@/navigation/route-names';
-import {Modal} from '@/components/modal';
 import type {HomeScreenProps} from '@/navigation/types';
 
 const TestScreen = ({navigation}: HomeScreenProps) => {
@@ -20,9 +19,6 @@ const TestScreen = ({navigation}: HomeScreenProps) => {
       <View style={{flex: 2, backgroundColor: 'skyblue'}}>
         <Text>Good2</Text>
       </View>
-      <Modal onCloseModal={() => {}}>
-        <Text>Modal</Text>
-      </Modal>
     </>
   );
 };
