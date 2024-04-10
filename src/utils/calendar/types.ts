@@ -15,3 +15,10 @@ export interface ITargetDay {
   month: number;
   day: number;
 }
+
+export interface ILocale {
+  countryCode: string;
+  isRTL: boolean;
+  languageCode: string;
+  languageTag: string;
+}

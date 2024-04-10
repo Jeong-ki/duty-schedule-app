@@ -7,6 +7,10 @@ const signInUser = async (signInData: ISignInReq): Promise<ISignInRes> => {
   return (await api.post<ISignInRes>('/auth/signin', signInData)).data;
 };
 
+/**
+ * @title auth - 로그인
+ * @api POST /auth/signin
+ */
 export const useSignInUser = (
   options?: UseMutationOptions<ISignInRes, AxiosError, ISignInReq>,
 ) => {

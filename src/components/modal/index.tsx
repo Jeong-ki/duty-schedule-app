@@ -11,10 +11,18 @@ import {
   View,
 } from 'react-native';
 import {useModalStore} from '@/stores/useModalStore';
+import {formatDate} from '@/utils';
+import {getLocales} from 'react-native-localize';
 
 export const Modal = () => {
-  const {item, onOpen} = useModalStore();
+  const {
+    item: {year, month, day, memo, color},
+    onOpen,
+  } = useModalStore();
+  const locales = getLocales();
+
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [textMemo, setTextMemo] = useState(memo || '');
 
   const handleOutsidePress = () => {
     if (isKeyboardVisible) {
@@ -49,20 +57,40 @@ export const Modal = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}>
-        <Pressable style={styles.modalInner}>
+        <View style={styles.modalInner}>
+          <View style={styles.currentDate}>
+            <Text>
+              {formatDate({
+                date: new Date(`${year}-${month}-${day}`),
+                locales,
+              })}
+            </Text>
+            <Text>닫기(아이콘)</Text>
+          </View>
           <View style={styles.innerContent}>
-            <Text>{item?.memo}</Text>
+            <TextInput
+              style={styles.memoInput}
+              placeholder="메모를 입력하세요..."
+              value={memo}
+              onChangeText={text => setTextMemo(text)}
+              multiline
+            />
           </View>
           <View style={styles.buttonWrapper}>
-            <TextInput placeholder="input test" />
-            <Pressable onPress={() => console.log('yes')} style={styles.button}>
-              <Text>네</Text>
+            <Pressable style={styles.button}>
+              <Text>컬러</Text>
             </Pressable>
             <Pressable style={styles.button}>
-              <Text>아니오</Text>
+              <Text>체크박스</Text>
+            </Pressable>
+            <Pressable style={styles.button}>
+              <Text>줄긋기</Text>
+            </Pressable>
+            <Pressable style={styles.button}>
+              <Text>확인(아이콘)</Text>
             </Pressable>
           </View>
-        </Pressable>
+        </View>
       </KeyboardAvoidingView>
     </Pressable>
   );
@@ -79,17 +107,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 15,
   },
   modalInner: {
     backgroundColor: 'orange',
-    height: 300,
-    width: Dimensions.get('window').width - 100,
+    height: 350,
+    width: Dimensions.get('window').width - 50,
     borderRadius: 20,
-    padding: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  currentDate: {
+    alignItems: 'center',
   },
   innerContent: {
     flex: 1,
     backgroundColor: 'pink',
+  },
+  memoInput: {
+    flex: 1,
+    backgroundColor: 'gray',
   },
   buttonWrapper: {
     flexDirection: 'row',

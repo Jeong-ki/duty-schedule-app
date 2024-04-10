@@ -2,14 +2,13 @@ import {countryCalendarMap} from '@/constants';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {getCountry} from 'react-native-localize';
-import {CalendarInner} from './calendar-inner';
+import {CalendarInner} from './main-calendar-inner';
 import Swiper from 'react-native-swiper';
 
 export const Calendar = () => {
-  const country = getCountry();
-  const isKr: boolean = country === 'KR';
+  const isKr: boolean = getCountry() === 'KR';
   const {months, weekDays} =
-    countryCalendarMap[country] || countryCalendarMap.EN;
+    countryCalendarMap[getCountry()] || countryCalendarMap.EN;
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleSwipeMonth = (index: number) => {
@@ -24,6 +23,7 @@ export const Calendar = () => {
     return {
       year: date.getFullYear(),
       month: date.getMonth(),
+      isKr,
     };
   };
 

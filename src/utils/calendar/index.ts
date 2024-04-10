@@ -1,5 +1,10 @@
 import {DAYS_IN_MONTH} from '@/constants';
-import type {IGetMonthProps, IGetMonthReturnItem, ITargetDay} from './types';
+import type {
+  IGetMonthProps,
+  IGetMonthReturnItem,
+  ILocale,
+  ITargetDay,
+} from './types';
 
 const checkLeapYear = (year: number): boolean => {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -53,4 +58,23 @@ export const isToday = ({year, month, day}: ITargetDay) => {
   today.setHours(0, 0, 0, 0);
 
   return targetDate.getTime() === today.getTime();
+};
+
+export const formatDate = ({
+  date,
+  locales,
+}: {
+  date: Date;
+  locales: ILocale[];
+}) => {
+  if (locales.length > 0) {
+    const locale = locales[0].languageTag;
+    return new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(date);
+  }
+
+  return date.toISOString().substring(0, 10);
 };

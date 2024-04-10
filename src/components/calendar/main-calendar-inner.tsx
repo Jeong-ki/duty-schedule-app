@@ -2,14 +2,11 @@ import React from 'react';
 import {chunkArray, getMonthDate, isToday} from '@/utils';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import type {CalendarInnerProps} from './types';
-import {getCountry} from 'react-native-localize';
 import {useModalStore} from '@/stores/useModalStore';
 import {ITargetDay} from '@/utils/calendar/types';
 
-export const CalendarInner = ({year, month}: CalendarInnerProps) => {
+export const CalendarInner = ({year, month, isKr}: CalendarInnerProps) => {
   const {setItem, onOpen} = useModalStore();
-  const country = getCountry();
-  const isKr: boolean = country === 'KR';
 
   const handleOpenModal = (item: ITargetDay) => () => {
     setItem({...item, memo: '메모 테스트', color: ''});
@@ -40,8 +37,12 @@ export const CalendarInner = ({year, month}: CalendarInnerProps) => {
                 </View>
               </View>
               <Text
+                numberOfLines={100}
+                ellipsizeMode="tail"
                 style={[styles.memo, item?.isOtherMonth && styles.otherMonth]}>
-                메모...
+                {
+                  '가나 다라마바사메모메모메모가나다라마바사메모메모메모가나다\n라마바사메모메모메모가나다라마ㅋㅋ어이없다잉'
+                }
               </Text>
             </Pressable>
           ))}
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   memo: {
+    flex: 1,
     fontSize: 11,
     paddingHorizontal: 1,
   },
