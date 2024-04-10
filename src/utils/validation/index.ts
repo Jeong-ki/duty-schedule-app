@@ -35,9 +35,6 @@ export const signUpValidation = <T extends ISignUpState>(state: T) => {
   if (!validateEmail(state.email)) {
     errors.email = '올바른 이메일 주소 형식이 아닙니다.';
   }
-  if (state.username === '') {
-    errors.username = '유저명을 입력해주세요.';
-  }
   if (state.password === '') {
     errors.password = '비밀번호를 입력해주세요.';
   }

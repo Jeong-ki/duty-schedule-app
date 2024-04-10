@@ -5,6 +5,5 @@ export interface ISignInState {
 
 export interface ISignUpState {
   email: string;
-  username: string;
   password: string;
 }

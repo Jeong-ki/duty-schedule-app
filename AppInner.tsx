@@ -20,12 +20,11 @@ export default function AppInner() {
         const {
           id,
           email,
-          username,
           newAccessToken: accessToken,
           newRefreshToken,
         } = response;
         await saveRefreshToken(newRefreshToken);
-        setUser({id, email, username, accessToken});
+        setUser({id, email, accessToken});
       } catch (error) {
         console.error('Fail RememberMe: ', error);
         await removeRefreshToken();

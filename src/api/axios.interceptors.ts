@@ -38,13 +38,12 @@ export const setInterceptors = (instance: AxiosInstance) => {
               const response = await api.post('/auth/refresh-user', {
                 refreshToken: refreshToken,
               });
-              const {id, email, username, newAccessToken, newRefreshToken} =
+              const {id, email, newAccessToken, newRefreshToken} =
                 response.data;
 
               useUserStore.getState().setUser({
                 id,
                 email,
-                username,
                 accessToken: newAccessToken,
               });
               await saveRefreshToken(newRefreshToken);

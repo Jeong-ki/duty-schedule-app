@@ -21,7 +21,6 @@ const SignUp = ({navigation}: SignUpScreenProps) => {
   const setUser = useUserStore(state => state.setUser);
   const initialState = useMemo(
     () => ({
-      username: '',
       email: '',
       password: '',
     }),
@@ -29,7 +28,6 @@ const SignUp = ({navigation}: SignUpScreenProps) => {
   );
 
   const emailRef: MutableRefObject<TextInput | null> = useRef(null);
-  const usernameRef: MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: MutableRefObject<TextInput | null> = useRef(null);
 
   const {mutate: signUpUser, isPending} = useSignUpUser({
@@ -76,27 +74,10 @@ const SignUp = ({navigation}: SignUpScreenProps) => {
           returnKeyType="next"
           clearButtonMode="while-editing"
           ref={emailRef}
-          onSubmitEditing={() => usernameRef.current?.focus()}
+          onSubmitEditing={() => passwordRef.current?.focus()}
           blurOnSubmit={false}
         />
         <Text style={styles.errorText}>{errors.email || ''}</Text>
-      </View>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>이름</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="이름을 입력해주세요."
-          placeholderTextColor="#666"
-          onChangeText={(text: string) => onChange('username', text)}
-          value={values.username}
-          textContentType="name"
-          returnKeyType="next"
-          clearButtonMode="while-editing"
-          ref={usernameRef}
-          onSubmitEditing={(): void | undefined => passwordRef.current?.focus()}
-          blurOnSubmit={false}
-        />
-        <Text style={styles.errorText}>{errors.username || ''}</Text>
       </View>
       <View style={styles.inputWrapper}>
         <Text style={styles.label}>비밀번호</Text>

@@ -20,7 +20,6 @@ const UserScreen = ({navigation}: UserScreenProps) => {
       </View>
       <View>
         <Text>email: {user?.email}</Text>
-        <Text>username: {user?.username}</Text>
       </View>
       <Button onClick={handleLogout} isLoading={false} disabled={false}>
         로그아웃

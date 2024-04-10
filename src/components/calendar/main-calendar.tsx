@@ -5,7 +5,7 @@ import {getCountry} from 'react-native-localize';
 import {CalendarInner} from './main-calendar-inner';
 import Swiper from 'react-native-swiper';
 
-export const Calendar = () => {
+export const MainCalendar = () => {
   const isKr: boolean = getCountry() === 'KR';
   const {months, weekDays} =
     countryCalendarMap[getCountry()] || countryCalendarMap.EN;
