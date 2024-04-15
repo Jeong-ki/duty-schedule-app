@@ -1,21 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {chunkArray, getMonthDate, isToday} from '@/utils';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import type {CalendarInnerProps} from './types';
 import {useModalStore} from '@/stores/useModalStore';
 import {ITargetDay} from '@/utils/calendar/types';
 
-export const CalendarInner = ({year, month, isKr}: CalendarInnerProps) => {
+const CalendarInnerComp = ({isNow, year, month, isKr}: CalendarInnerProps) => {
   const {setItem, onOpen} = useModalStore();
+  const [testText, setTestText] = useState('');
 
   const handleOpenModal = (item: ITargetDay) => () => {
     setItem({...item, memo: '메모 테스트', color: ''});
     onOpen(true);
   };
 
+  const currentMonthDate = getMonthDate({year, month});
+
+  useEffect(() => {
+    if (isNow) {
+      setTestText('가나다라 메모테스트1234abcd');
+    }
+  }, [isNow]);
+
   return (
     <View style={styles.tbody}>
-      {chunkArray(getMonthDate({year, month}), 7).map((chunk, chunkIdx) => (
+      {chunkArray(currentMonthDate, 7).map((chunk, chunkIdx) => (
         <View key={chunkIdx} style={styles.cellRow}>
           {chunk.map((item, idx) => (
             <Pressable
@@ -40,9 +49,7 @@ export const CalendarInner = ({year, month, isKr}: CalendarInnerProps) => {
                 numberOfLines={100}
                 ellipsizeMode="tail"
                 style={[styles.memo, item?.isOtherMonth && styles.otherMonth]}>
-                {
-                  '가나 다라마바사메모메모메모가나다라마바사메모메모메모가나다\n라마바사메모메모메모가나다라마ㅋㅋ어이없다잉'
-                }
+                {testText}
               </Text>
             </Pressable>
           ))}
@@ -52,9 +59,12 @@ export const CalendarInner = ({year, month, isKr}: CalendarInnerProps) => {
   );
 };
 
+export const CalendarInner = React.memo(CalendarInnerComp);
+
 const styles = StyleSheet.create({
   tbody: {
     flex: 1,
+    height: '100%',
   },
   cellRow: {
     flex: 1,

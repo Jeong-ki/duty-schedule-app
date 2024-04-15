@@ -21,6 +21,7 @@ export const MainCalendar = () => {
     const date = new Date(currentDate);
     date.setMonth(date.getMonth() + offset);
     return {
+      isNow: offset === 0,
       year: date.getFullYear(),
       month: date.getMonth(),
       isKr,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   table: {
     flex: 1,
-    padding: 5,
+    // padding: 5,
   },
   thead: {
     flexDirection: 'row',
